@@ -1,16 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 
-//namespace API.Models;
+namespace Biblioteca.models;
 
 
-public class AppDataContext : DbContext
+public class DbCtx : DbContext
 {
    
-    //public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Livro> Livros { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
+
+    
 
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=app.db");
+        optionsBuilder.UseSqlite("Data Source=BibliotecaDb.db");
     }
 }
