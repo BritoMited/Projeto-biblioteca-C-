@@ -1,0 +1,9 @@
+Livros:
+- verificar update
+- delete
+- Emprestimo
+- Devolucoes
+- Consulta Disponibilidade Livros
+- crud clientes
+
+https://docs.google.com/document/d/1dnYwsxkEyr4VP1IjiqGr8sdI9TlbtKNzRSbZ1CZ_CbE/edit

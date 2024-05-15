@@ -2534,19 +2534,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\thiag\\.nuget\\packages\\": {}
+    "C:\\Users\\Jean\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\EstudoC#\\BibliotecaC\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\Biblioteca.csproj",
+      "projectUniqueName": "C:\\Users\\Jean\\Desktop\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\Biblioteca.csproj",
       "projectName": "Biblioteca",
-      "projectPath": "C:\\EstudoC#\\BibliotecaC\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\Biblioteca.csproj",
-      "packagesPath": "C:\\Users\\thiag\\.nuget\\packages\\",
-      "outputPath": "C:\\EstudoC#\\BibliotecaC\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\obj\\",
+      "projectPath": "C:\\Users\\Jean\\Desktop\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\Biblioteca.csproj",
+      "packagesPath": "C:\\Users\\Jean\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Jean\\Desktop\\Projeto-biblioteca-C-\\Biblioteca\\Biblioteca\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\thiag\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Jean\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2605,7 +2605,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

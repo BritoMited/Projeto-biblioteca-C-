@@ -11,7 +11,7 @@ public class DbCtx : DbContext
 
     
 
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite("Data Source=BibliotecaDb.db");

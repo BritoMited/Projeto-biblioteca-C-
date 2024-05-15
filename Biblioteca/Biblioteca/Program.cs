@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 builder.Services.AddDbContext<DbCtx>();
-
+var app = builder.Build();
 
 
 app.MapGet("/a", () => "Hello World!");
@@ -24,13 +23,14 @@ app.MapPost("/Biblioteca/livro/cadastrar", ([FromBody] Livro livro, [FromService
 
     ctx.Livros.Add(livro);
     ctx.SaveChanges();
-    return Results.Created("foi",livro);
+    return Results.Created("",livro);
 
     // ctx.Update();
     // ctx.SaveChanges();
 
 });
-app.MapPut("/Biblioteca/livro/atualizar/{id}", ([FromBody]int id, Livro livroAtt, [FromServices] DbCtx ctx) => {
+
+app.MapPut("/Biblioteca/livro/atualizar/{id}", ([FromRoute]int id,[FromBody] Livro livroAtt, [FromServices] DbCtx ctx) => {
 
     Livro? livroParaAtt = ctx.Livros.Find(id);
     if (livroParaAtt == null){
@@ -46,5 +46,18 @@ app.MapPut("/Biblioteca/livro/atualizar/{id}", ([FromBody]int id, Livro livroAtt
     ctx.SaveChanges();
     return Results.Ok(livroParaAtt);
 });
+
+//GET: http://localhost:porta/api/produto/listar
+app.MapGet("/Biblioteca/livro/listar",
+    ([FromServices] DbCtx ctx) =>
+{
+    if (ctx.Livros.ToList().Any())
+    {
+        return Results.Ok(ctx.Livros.ToList());
+    }
+    return Results.NotFound("Tabela vazia!");
+});
+
+
 
 app.Run();
