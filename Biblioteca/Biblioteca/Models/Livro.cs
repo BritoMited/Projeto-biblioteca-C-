@@ -17,7 +17,8 @@ public string? Titulo{get ;set ;}
 public string? Autor{get ;set ;}
 public string? Editora{get ;set ;}
 public string? Categoria{get ;set ;}
-public int? Id{get ;set ;}
+public int Id{get ;set ;}
+public List<Usuario> ListaUsuarios { get; set; } = [];
 
 
 }

@@ -18,9 +18,8 @@ public class Usuario{
     public string? Cpf {get; set;}
     public string? Telefone {get;set;}
     public string? Endereco {get;set;}
-    public int? Id{get;set;}
-
-    public List<Livro>? ListaLivro {get; set;}
+    public int Id{get;set;}
+    public List<Livro>? ListaLivros {get; set;} = [];
 
 
 }
