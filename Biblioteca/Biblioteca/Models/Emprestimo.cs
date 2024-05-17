@@ -14,8 +14,8 @@ public class Emprestimo{
     public int Id { get; set; }
     public int UsuarioId { get; set; }
     public int LivroId { get; set; }
-    public Livro LivroEmprestado { get; set; } = null!;
-    public Usuario UsuarioQueEmprestou { get; set; } = null!;
+    public Livro? LivroEmprestado { get; set; } 
+    public Usuario? UsuarioQueEmprestou { get; set; }
 
 
 }

@@ -1,3 +1,4 @@
+
 namespace Biblioteca.models;
 public class Livro{
 public Livro(){
@@ -20,5 +21,8 @@ public string? Categoria{get ;set ;}
 public int Id{get ;set ;}
 public List<Usuario> ListaUsuarios { get; set; } = [];
 
-
+    public static implicit operator List<object>(Livro v)
+    {
+        throw new NotImplementedException();
+    }
 }

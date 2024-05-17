@@ -1,3 +1,4 @@
+using System.Xml.Serialization;
 using Biblioteca.models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,15 +23,11 @@ app.MapPost("/Biblioteca/livro/cadastrar", ([FromBody] Livro livro, [FromService
     ctx.SaveChanges();
     return Results.Created("",livro);
 
-    // ctx.Update();
-    // ctx.SaveChanges();
-
 });
 
 //UPDATE Livro
 //http://localhost:porta/Biblioteca/livro/atualizar/{id}
 app.MapPut("/Biblioteca/livro/atualizar/{id}", ([FromRoute]int id,[FromBody] Livro livroAtt, [FromServices] DbCtx ctx) => {
-
     Livro? livroParaAtt = ctx.Livros.Find(id);
     if (livroParaAtt == null){
         return Results.NotFound("Livro nao encontrado");
@@ -49,12 +46,19 @@ app.MapPut("/Biblioteca/livro/atualizar/{id}", ([FromRoute]int id,[FromBody] Liv
 
 //LISTAR Livros
 //GET: http://localhost:porta/Biblioteca/livro/listar
-app.MapGet("/Biblioteca/livro/listar",
-    ([FromServices] DbCtx ctx) =>
-{
+app.MapGet("/Biblioteca/livro/listar", ([FromServices] DbCtx ctx) =>
+{  
+    
+    List<Livro>? livrosDisponiveis = [];
     if (ctx.Livros.ToList().Any())
     {
-        return Results.Ok(ctx.Livros.ToList());
+     foreach (var item in ctx.Livros.ToList())
+        {  
+            if(ctx.Emprestimos.Any(e => e.LivroId != item.Id)){
+                livrosDisponiveis.Add(item);
+            }
+        }
+        return Results.Ok(livrosDisponiveis);
     }
     return Results.NotFound("Tabela vazia!");
 });
@@ -69,9 +73,6 @@ app.MapGet("/Biblioteca/livro/buscar/{id}", ([FromRoute] int Id, [FromServices] 
     {
         return Results.NotFound("Livro não encontrado!");
     }
-
-    string disponibilidade;
-
     return Results.Ok(livro);
 });
 
@@ -106,8 +107,7 @@ app.MapPost("/Biblioteca/usuarios/cadastrar", ([FromBody] Usuario usuario, [From
     ctx.SaveChanges();
     return Results.Created("",usuario);
 
-    // ctx.Update();
-    // ctx.SaveChanges();
+
 
 });
 
@@ -124,7 +124,7 @@ app.MapGet("/Biblioteca/usuarios/listar", ([FromServices] DbCtx ctx) =>
 });
 
 //UPDATE Usuario
-//http://localhost:porta/Biblioteca/livro/atualizar/{id}
+//http://localhost:porta/Biblioteca/usuarios/atualizar/{id}
 app.MapPut("/Biblioteca/usuarios/atualizar/{id}", ([FromRoute]int id,[FromBody] Usuario usuarioAtt, [FromServices] DbCtx ctx) => {
 
     Usuario? usuarioParaAtt = ctx.Usuarios.Find(id);
@@ -159,7 +159,7 @@ app.MapGet("/Biblioteca/usuarios/buscar/{id}",([FromRoute] int Id, [FromServices
 
 
 // - Empréstimos de livros: Possibilidade de realizar empréstimos para os usuários cadastrados.
-
+// ##########################################################################################################################
 
 //EMPRESTIMO livro
 //usar aqui
@@ -174,14 +174,20 @@ app.MapPost("/Biblioteca/emprestimo/{id}", ([FromRoute] int Id, [FromBody] EmpMo
     }
 
     Livro? livro = ctx.Livros.FirstOrDefault(x => x.Id == empModel.Id);
-    if (usuario is null)
+    if (livro is null)
     {
         return Results.NotFound("Livro não encontrado!");
     }
+    
+// - Consultas de disponibilidade: Verificação da disponibilidade dos livros no acervo.
+    if (ctx.Emprestimos.Any(e => e.LivroId == empModel.Id))
+    {
+        return Results.BadRequest("Ja foi emprestado");
+    }
 
-    ctx.Emprestimos.Count(e => e.LivroId == livro.Id);
 
     Emprestimo? e = new Emprestimo(usuario.Id, livro.Id);
+
     ctx.Emprestimos.Add(e);
     ctx.SaveChanges();
     return Results.Ok(e);
@@ -193,9 +199,17 @@ app.MapPost("/Biblioteca/emprestimo/{id}", ([FromRoute] int Id, [FromBody] EmpMo
 //POST: http://localhost:5290/Biblioteca/emprestimo/listar
 app.MapGet("/Biblioteca/emprestimo/listar", ([FromServices] DbCtx ctx) =>
 {
-
     if (ctx.Emprestimos.ToList().Any())
     {
+        foreach (var item in ctx.Emprestimos.ToList())
+        {   
+            Usuario? usuario = ctx.Usuarios.FirstOrDefault(x => x.Id == item.UsuarioId);
+            item.UsuarioQueEmprestou = usuario;
+
+            Livro? livro = ctx.Livros.FirstOrDefault(x => x.Id == item.LivroId);
+            item.LivroEmprestado = livro;   
+        }
+    
         return Results.Ok(ctx.Emprestimos.ToList());
     }
     return Results.NotFound("Tabela vazia!");
@@ -203,37 +217,32 @@ app.MapGet("/Biblioteca/emprestimo/listar", ([FromServices] DbCtx ctx) =>
 });
 
 // - Devoluções de livros: Processo de devolução de livros por parte dos usuários.
-// - Consultas de disponibilidade: Verificação da disponibilidade dos livros no acervo.
+
 //usar aqui
 //Devolucao livro
-app.MapPost("/Biblioteca/devolucao/{id}", ([FromRoute] int Id, [FromBody] int LivroId, [FromServices] DbCtx ctx) =>
+app.MapPost("/Biblioteca/devolucao/{id}", ([FromRoute] int Id, [FromBody] EmpModel empModel, [FromServices] DbCtx ctx) =>
 {
-
     Usuario? usuario = ctx.Usuarios.FirstOrDefault(x => x.Id == Id);
     if (usuario is null)
     {
         return Results.NotFound("Usuario não encontrado!");
     }
 
-    Livro? livro = ctx.Livros.FirstOrDefault(x => x.Id == Id);
-    if (usuario is null)
+    Livro? livro = ctx.Livros.FirstOrDefault(x => x.Id == empModel.Id);
+    if (livro is null)
     {
         return Results.NotFound("Livro não encontrado!");
     }
-    if (!usuario.ListaLivros.Contains(livro)){
-        return Results.BadRequest("livro não foi emprestado para este usuario");
-    }
 
-    foreach(var LivroEmprestado in usuario.ListaLivros){
-        if (LivroEmprestado.Id == LivroId){
-            usuario.ListaLivros.Remove(LivroEmprestado);
-            break;
-        }
-    }
+    Emprestimo? emprestimo = ctx.Emprestimos.FirstOrDefault(e => e.UsuarioId == usuario.Id && e.LivroId == livro.Id);
+    if (emprestimo is null)
+    {
+        return Results.NotFound("Emprestimo não encontrado!");
+    } 
     
+    ctx.Emprestimos.Remove(emprestimo);
     ctx.SaveChanges();
-    return Results.Ok("Livro devolvido");
-
+    return Results.Ok("Empréstimo removido com sucesso");
 });
 
 
