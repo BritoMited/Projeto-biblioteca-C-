@@ -1,10 +1,13 @@
 namespace Biblioteca.models;
 public class Emprestimo{
 
+//Inicializando o Construtor Vazio
     public Emprestimo()
     {
 
     }
+
+//Construtor com tudo que é utilizado para ter registro de um emprestimo
 
     public Emprestimo(int usuarioId, int livroId){
         UsuarioId = usuarioId;
