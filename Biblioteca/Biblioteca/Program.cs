@@ -234,6 +234,28 @@ app.MapGet("/Biblioteca/usuarios/buscar/{id}", ([FromRoute] int Id, [FromService
     return Results.Ok(usuario);
 });
 
+// Deletar Livro
+// URL: http://localhost:5290/Biblioteca/livro/deletar/{id}
+
+app.MapDelete("/Biblioteca/usuarios/deletar/{id}", ([FromRoute] int Id, [FromServices] DbCtx ctx) =>
+{
+    // Busca o usuario pelo ID
+    Usuario? usuario = ctx.Usuarios.Find(Id);
+
+    // Se não encontrado, retorna 404
+    if (usuario is null)
+    {
+        return Results.NotFound("Usuario não encontrado!");
+    }
+
+    // Remove o usuario e salva as alterações
+    ctx.Usuarios.Remove(usuario);
+    ctx.SaveChanges();
+
+    // Retorna 200 com mensagem de sucesso
+    return Results.Ok("Usuario deletado com sucesso");
+});
+
 
 
 // ----------------------------------------------------------------------------------------------------------------

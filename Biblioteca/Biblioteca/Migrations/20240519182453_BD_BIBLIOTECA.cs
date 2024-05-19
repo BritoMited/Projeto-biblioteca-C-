@@ -5,7 +5,7 @@
 namespace Biblioteca.Migrations
 {
     /// <inheritdoc />
-    public partial class DBcreate : Migration
+    public partial class BD_BIBLIOTECA : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
